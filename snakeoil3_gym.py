@@ -530,18 +530,21 @@ def drive_example(c):
     '''This is only an example. It will get around the track but the
     correct thing to do is write your own `drive()` function.'''
     S,R= c.S.d,c.R.d
-    target_speed=100
+    target_speed=80
 
     # Steer To Corner
-    R['steer']= S['angle']*10 / PI
+    R['steer']= S['angle']*8 / PI
     # Steer To Center
     R['steer']-= S['trackPos']*.10
-
     # Throttle Control
     if S['speedX'] < target_speed - (R['steer']*50):
         R['accel']+= .01
     else:
         R['accel']-= .01
+        if S['speedX'] > target_speed + 15:
+            R['brake'] = 0.4
+        else:
+            R['brake'] = 0
     if S['speedX']<10:
        R['accel']+= 1/(S['speedX']+.1)
 
@@ -566,7 +569,7 @@ def drive_example(c):
 
 # ================ MAIN ================
 if __name__ == "__main__":
-    C= Client(p=3101)
+    C= Client(p=3001)
     for step in range(C.maxSteps,0,-1):
         C.get_servers_input()
         drive_example(C)
